@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Team FIDO Project V2</title>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<link rel="stylesheet" href="bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css">
+	<!-- Latest compiled and minified JavaScript -->
+	<link rel="stylesheet" href="stylesheet.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script src="processing.js"></script>
+	<script src="bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script>
+</head>
+<body>
+	<!--NAVIGATION ONLY FOR LOOKS REALLY-->
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Team FIDO</a>
+			</div>
+		</div><!-- /.container-fluid -->
+	</nav>
+
+	<div class="container-fluid">
+		<div class="col-md-11">
+			<!--THIS IS ACTUAL CODE THAT MATTERS -->
+			<button onClick="lockShapes()" type="button" class="btn btn-warning btn-lg menu-task">
+				<span class="glyphicon glyphicon glyphicon-ban-circle" aria-hidden="true">Lock</span>
+			</button>
+			<button onClick="unlockShapes()" type="button" class="btn btn-warning btn-lg menu-task">
+				<span class="glyphicon glyphicon glyphicon-ban-circle" aria-hidden="true">Unlock</span>
+			</button>
+			<button onClick="lockShapes()" type="button" class="btn btn-success btn-lg">Begin Recording</button>
+			<button onClick="unlockShapes()" type="button" class="btn btn-danger btn-lg">End Recording</button>
+			<button type="button" class="btn btn-info btn-lg menu-task" data-toggle="modal" onClick="addShapeModal()" data-target="#myModal">Add Shape</button>
+
+			<!--New buttons to show / hide grid -->
+			<button type="button" class="btn btn-info btn-lg menu-task" data-toggle="modal" onClick="createGridModal()" data-target="#secondModal">Grid On</button>
+			<button type="button" class="btn btn-info btn-lg" onclick="downloadCSV({ filename: 'result.csv' });">Download CSV</button>
+                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" onClick="tappingTaskModal()" data-target="#tappingTaskModal">Create Tapping Task</button>
+                        <button type="button" id="show-menu-task" class="btn btn-info btn-lg" data-toggle="modal" onClick="showMenuTaskOptions()">Create Menu Task</button>
+
+			<hr/>
+			<label for="screeninches">Screen Size</label>
+			<div class="input-group col-md-3">
+				<input id="screeninches" type="text" class="form-control" aria-label="dots per inch">
+				<span class="input-group-addon">Inches</span>
+			</div>
+			<br/>
+			<button type="button" class="btn btn-info btn-lg" data-toggle="modal" onClick="updateDPI()">Save Screen Size</button>
+			<hr/>
+                        <div class="menu-task">
+			  <label for="target-sequence-length">Target Sequence Length</label>
+			  <div class="input-group col-md-3">
+			    <input id="target-sequence-length" type="text" class="form-control">
+			    <span class="input-group-addon">Shapes</span>
+			  </div>
+			  <br/>
+			  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" onClick="setTargetSequenceLength()">Save Target Sequence Length</button>
+			  <br/>
+			  <br/>
+			  <button onClick="setTargetSequence()" type="button" class="btn btn-success btn-lg" id="sequence-set-start">Choose Target Sequence</button>
+			  <button onClick="endSetTargetSequence()" type="button" class="btn btn-success btn-lg" id="sequence-set-end">Done</button>
+                        </div>
+			<hr/>
+			<div class="form-group">
+				<label for="sel1">Select type of successfull contact indication:</label>
+				<select class="form-control" id="contactdropdown">
+					<option>First Contact</option>
+					<option>Lift Off</option>
+				</select>
+			</div>
+			<hr/>
+			<div class="form-group">
+				<label for="sel1">Select Level:</label>
+				<select class="form-control" id="leveldropdown">
+					<option>1</option>
+				</select>
+			</div>
+			<hr/>
+			<br/>
+			<button type="button" class="btn btn-info btn-lg" data-toggle="modal" onClick="loadLevel()">Load Level</button>
+			<hr/>
+			<button onClick="saveCurrentLevel()" type="button" class="btn btn-success btn-lg menu-task">Save Level</button>
+			<button onClick="makeNewLevel()" type="button" class="btn btn-success btn-lg menu-task">Make New Level</button>
+			<button onClick="fullscreen()" type="button" class="btn btn-success btn-lg">Fullscreen</button>
+			<!-- Trigger the modal with a button -->
+			<!-- Modal -->
+			<div id="myModal" tabindex="-1" class="modal fade" role="dialog" aria-hidden="true">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Add Shape</h4>
+						</div>
+						<div class="modal-body">
+							<h4>Shape Type</h4>
+							<select id="newshapetype" class="form-control">
+								<option value="circle">Circle</option>
+								<option value="triangle">Triangle</option>
+								<option value="square">Square</option>
+							</select>
+							<h4>Size (Inches)</h4>
+							<div class="input-group">
+								<input id="newshapesize" type="text" class="form-control">
+								<span class="input-group-btn">
+									<button class="btn btn-secondary" type="button">Inches</button>
+								</span>
+							</div>
+							<h4>Xcoord (Pixels)</h4>
+							<div class="input-group">
+								<input id="Xcoordinate" type="text" class="form-control">
+								<span class="input-group-btn">
+									<button class="btn btn-secondary" type="button">Pixels</button>
+								</span>
+							</div>
+							<h4>Ycoord (Pixels)</h4>
+							<div class="input-group">
+								<input id="Ycoordinate" type="text" class="form-control">
+								<span class="input-group-btn">
+									<button class="btn btn-secondary" type="button">Pixels</button>
+								</span>
+							</div>
+							<h4>Color</h4>
+							<div id="cp11" class="input-group colorpicker-component">
+								<input type="text" value="#00AABB" class="form-control" />
+								<span class="input-group-addon"><i></i></span>
+							</div>	
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" onClick="createShape()">Create</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<!-- Trigger the 2nd modal with a button -->
+			<!-- secondModal -->
+			<div id="secondModal" tabindex="-1" class="modal fade" role="dialog" aria-hidden="true">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Add Grid</h4>
+						</div>
+						<div class="modal-body">
+							<h4>Grid Rows</h4>
+							<div class="input-group">
+								<input id="numRows" type="text" class="form-control">
+								<span class="input-group-btn">
+									<button class="btn btn-secondary" type="button">Integer</button>
+								</span>
+							</div>
+							<h4>Grid Columns</h4>
+							<div class="input-group">
+								<input id="numColumns" type="text" class="form-control">
+								<span class="input-group-btn">
+									<button class="btn btn-secondary" type="button">Integer</button>
+								</span>
+							</div>
+							<h4>Grid Line Color</h4>
+							<div id="gridcolorpick" class="input-group colorpicker-component">
+								<input type="text" value="#00AABB" class="form-control" />
+								<span class="input-group-addon"><i></i></span>
+							</div>
+							<h4>Auto Populate</h4>
+							<div class="form-group row">
+								<div class="col-sm-10">
+									<div class="form-check">
+										<label class="form-check-label">
+											<input id="populate" class="form-check-input" type="checkbox">
+										</label>
+									</div>
+								</div>
+							</div>
+							<h3>Warning: AutoPopulate will delete current shapes</h3>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" onClick="createGrid()">Create</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tappingTaskModal" tabindex="-1" class="modal fade" role="dialog" aria-hidden="true">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Configure Tapping Task</h4>
+						</div>
+						<div class="modal-body">
+                                                  <table style="width:100%">
+                                                      <tr>
+                                                          <th></th>
+                                                          <th>Initial</th>
+                                                          <th>Delta</th> 
+                                                          <th>Iterations</th>
+                                                      </tr>
+                                                      <tr>
+                                                          <th>Distance</th>
+                                                          <td>
+			                                      <div class="input-group">
+			                                      	<input id="distance_initial" type="text" class="form-control">
+			                                      </div>
+                                                          </td>
+                                                          <td>
+			                                      <div class="input-group">
+			                                      	<input id="distance_delta" type="text" class="form-control">
+			                                      </div>
+                                                          </td>
+                                                          <td>
+			                                      <div class="input-group">
+			                                      	<input id="distance_iterations" type="text" class="form-control">
+			                                      </div>
+                                                          </td>
+                                                      </tr>
+                                                      <tr>
+                                                          <th>Diameter</th>
+                                                          <td>
+			                                      <div class="input-group">
+			                                      	<input id="diameter_initial" type="text" class="form-control">
+			                                      </div>
+                                                          </td>
+                                                          <td>
+			                                      <div class="input-group">
+			                                      	<input id="diameter_delta" type="text" class="form-control">
+			                                      </div>
+                                                          </td>
+                                                          <td>
+			                                      <div class="input-group">
+			                                      	<input id="diameter_iterations" type="text" class="form-control">
+			                                      </div>
+                                                          </td>
+                                                      </tr>
+                                                      <tr>
+                                                          <th>Angle</th>
+                                                          <td>
+			                                      <div class="input-group">
+			                                      	<input id="angle_initial" type="text" class="form-control">
+			                                      </div>
+                                                          </td>
+                                                          <td>
+			                                      <div class="input-group">
+			                                      	<input id="angle_delta" type="text" class="form-control">
+			                                      </div>
+                                                          </td>
+                                                          <td>
+			                                      <div class="input-group">
+			                                      	<input id="angle_iterations" type="text" class="form-control">
+			                                      </div>
+                                                          </td>
+                                                      </tr>
+                                                   </table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" onClick="createTappingTask()">Create</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div id="fullscreenModal" tabindex="-1" class="modal fade" role="dialog" aria-hidden="true">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Alert</h4>
+						</div>
+						<div class="modal-body">
+							<p>Press F11 to make the browser completely fullscreen</p>
+							<p>Press ESC to deactivate Fullscreen mode</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<br/><br/>
+		</div>
+	</div>
+	<canvas id="mainCanvas" data-processing-sources="myprocessing.pde"></canvas>
+	<script src="script.js"></script>
+</body>
+</html>

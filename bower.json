@@ -1,0 +1,23 @@
+{
+  "name": "TeamFIDO",
+  "homepage": "https://github.com/mdeeb95/teamfidov2",
+  "authors": [
+    "Mathew Deeb <mathew.deeb@virtustream.com>"
+  ],
+  "description": "CS4605 Project",
+  "main": "index.html",
+  "keywords": [
+    "dog"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-colorpicker": "^2.5.1"
+  }
+}
